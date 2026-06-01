@@ -107,12 +107,12 @@ void vTaskA( void *pvParameters )
 ```
 
 <details>
-<summary>💡 Ver solución</summary>
+<summary>💡 Pista</summary>
 
-```c
-printf( "[ Task A ] corriendo\n" );
-vTaskDelay( pdMS_TO_TICKS( 1000 ) );
-```
+- Para imprimir, usa `printf()` con el mensaje exacto entre comillas.
+- Para esperar, llama a `vTaskDelay()` pasando el tiempo en milisegundos convertido con la macro `pdMS_TO_TICKS()`.
+- Busca en el ejemplo de `vMiTask` de arriba: el patrón es idéntico.
+
 </details>
 
 ---
@@ -122,12 +122,11 @@ vTaskDelay( pdMS_TO_TICKS( 1000 ) );
 Haz lo mismo para `vTaskB`, pero con el mensaje `"[ Task B ] corriendo\n"` y **500 ms** de delay.
 
 <details>
-<summary>💡 Ver solución</summary>
+<summary>💡 Pista</summary>
 
-```c
-printf( "[ Task B ] corriendo\n" );
-vTaskDelay( pdMS_TO_TICKS( 500 ) );
-```
+- La estructura es exactamente igual a `vTaskA`.
+- Solo cambian dos cosas: el texto del mensaje y el número de milisegundos que pasas a `pdMS_TO_TICKS()`.
+
 </details>
 
 ---
@@ -146,12 +145,13 @@ xTaskCreate( funcion,     ← puntero a la función
 ```
 
 <details>
-<summary>💡 Ver solución</summary>
+<summary>💡 Pista</summary>
 
-```c
-xTaskCreate( vTaskA, "TaskA", 1000, NULL, PRIORIDAD_TASK_A, NULL );
-xTaskCreate( vTaskB, "TaskB", 1000, NULL, PRIORIDAD_TASK_B, NULL );
-```
+- Necesitas dos llamadas a `xTaskCreate()`, una por cada task.
+- El primer argumento es el nombre de la función (sin paréntesis): `vTaskA` y `vTaskB`.
+- El segundo es un string literal entre comillas para identificarla en el debugger.
+- Para la prioridad, usa las constantes `PRIORIDAD_TASK_A` y `PRIORIDAD_TASK_B` que ya están definidas al inicio del archivo.
+
 </details>
 
 ---
@@ -212,7 +212,15 @@ Prueba estos escenarios, compila y observa el output cada vez:
 make taller && ./taller
 ```
 
-> **Pregunta:** ¿qué pasa si le pones prioridad 0 a una task? (Pruébalo.)
+<details>
+<summary>💡 Pista</summary>
+
+- Modifica únicamente los números en los `#define` al inicio del archivo.
+- Recuerda que una task con mayor número de prioridad **gana** sobre las de menor número.
+- Cuando una task está en `vTaskDelay()` se encuentra en estado **Blocked** y no consume CPU, por eso la otra puede ejecutarse.
+- Prueba también poner prioridad `0` en una task y observa qué ocurre.
+
+</details>
 
 ---
 
@@ -241,14 +249,14 @@ Completa `vTaskProductora` en `taller.c`:
 - Espera 500 ms
 
 <details>
-<summary>💡 Ver solución</summary>
+<summary>💡 Pista</summary>
 
-```c
-xQueueSend( xQueue, &lContador, portMAX_DELAY );
-printf( "[ Productora ] envió: %d\n", lContador );
-lContador++;
-vTaskDelay( pdMS_TO_TICKS( 500 ) );
-```
+- El orden de las operaciones importa: primero envía a la queue, luego imprime, luego incrementa, luego espera.
+- Para enviar, pasa la dirección de `lContador` (con `&`) como segundo argumento de `xQueueSend()`.
+- El `printf` debe mostrar el valor de `lContador` antes de incrementarlo — usa `%d` como formato.
+- Para incrementar una variable entera en C: `variable++`.
+- El delay es igual al que ya usaste en las tasks anteriores.
+
 </details>
 
 ---
@@ -260,12 +268,12 @@ Completa `vTaskConsumidora`:
 - Imprime el valor recibido
 
 <details>
-<summary>💡 Ver solución</summary>
+<summary>💡 Pista</summary>
 
-```c
-xQueueReceive( xQueue, &lValor, portMAX_DELAY );
-printf( "[ Consumidora ] recibió: %d\n", lValor );
-```
+- `xQueueReceive()` bloquea la task automáticamente hasta que haya un dato disponible — no necesitas un delay explícito.
+- El segundo argumento es la dirección de la variable donde se guardará el valor recibido (usa `&lValor`).
+- Después de recibir, imprime el contenido de `lValor` con `printf`.
+
 </details>
 
 ---
@@ -279,18 +287,12 @@ Busca el bloque `TODO 3.3` en `main()` y:
 3. Crea las dos tasks (Productora con prioridad 1, Consumidora con prioridad 2)
 
 <details>
-<summary>💡 Ver solución</summary>
+<summary>💡 Pista</summary>
 
-```c
-xQueue = xQueueCreate( 5, sizeof( int32_t ) );
-if( xQueue == NULL )
-{
-    printf( "ERROR: no se pudo crear la queue.\n" );
-    return -1;
-}
-xTaskCreate( vTaskProductora,  "Productora",  1000, NULL, 1, NULL );
-xTaskCreate( vTaskConsumidora, "Consumidora", 1000, NULL, 2, NULL );
-```
+- `xQueueCreate()` devuelve `NULL` si no hay memoria suficiente — siempre verifica antes de continuar. Si es `NULL`, imprime un error y retorna `-1`.
+- Para crear las tasks, el patrón es el mismo que usaste en el TODO 1.3, pero ahora con `vTaskProductora` y `vTaskConsumidora`.
+- La Consumidora tiene prioridad más alta (2) para que el scheduler la despierte inmediatamente cuando llega un dato — esto es intencional.
+
 </details>
 
 ---
@@ -336,7 +338,13 @@ Si terminaste antes de tiempo, modifica `taller.c` para:
 3. Que cada Consumidora se identifique por nombre usando `pvParameters`
 
 <details>
-<summary>💡 Pista para el parámetro</summary>
+<summary>💡 Pista</summary>
+
+Para los números pares: ¿qué operación matemática te permite saltar de par en par?
+
+Para la segunda Consumidora: la misma función puede registrarse dos veces con `xTaskCreate()`, siempre que cada llamada reciba un parámetro distinto.
+
+Para identificar cada instancia por nombre, dentro de la función puedes recuperar el parámetro así:
 
 ```c
 /* En main, pasa un string como parámetro */
@@ -345,8 +353,10 @@ xTaskCreate( vTaskConsumidora, "Cons-B", 1000, "Consumidora B", 2, NULL );
 
 /* Dentro de la task, léelo así */
 const char *pcNombre = ( const char * ) pvParameters;
-printf( "%s recibió: %ld\n", pcNombre, lValor );
 ```
+
+Luego usa `pcNombre` en lugar de un string literal en tu `printf`.
+
 </details>
 
 ---
