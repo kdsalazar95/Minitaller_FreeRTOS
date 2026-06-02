@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RTOS Roulette</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#0f172a;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:30px;
+    }
+
+    h1{
+      margin-bottom:10px;
+      font-size:3rem;
+    }
+
+    p{
+      margin-bottom:25px;
+      color:#cbd5e1;
+    }
+
+    .board{
+      display:grid;
+      grid-template-columns:repeat(4, 140px);
+      gap:20px;
+    }
+
+    .card{
+      width:140px;
+      height:190px;
+      perspective:1000px;
+      cursor:pointer;
+    }
+
+    .card-inner{
+      position:relative;
+      width:100%;
+      height:100%;
+      transition:transform 0.8s;
+      transform-style:preserve-3d;
+    }
+
+    .flipped .card-inner{
+      transform:rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back{
+      position:absolute;
+      width:100%;
+      height:100%;
+      border-radius:16px;
+      backface-visibility:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:10px;
+      font-weight:bold;
+      font-size:1.1rem;
+    }
+
+    .card-front{
+      background:linear-gradient(135deg,#2563eb,#1e3a8a);
+      border:2px solid #60a5fa;
+    }
+
+    .card-back{
+      transform:rotateY(180deg);
+      color:white;
+    }
+
+    .question{
+      background:#dc2626;
+    }
+
+    .safe{
+      background:#16a34a;
+    }
+
+    .joker{
+      background:#9333ea;
+    }
+
+    .deadlock{
+      background:#ea580c;
+    }
+
+    .deadline{
+      background:#ca8a04;
+    }
+
+    .controls{
+      margin-top:30px;
+    }
+
+    button{
+      padding:12px 24px;
+      border:none;
+      border-radius:10px;
+      background:#2563eb;
+      color:white;
+      font-size:1rem;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    button:hover{
+      background:#1d4ed8;
+    }
+
+    .legend{
+      margin-top:30px;
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .legend div{
+      padding:10px 15px;
+      border-radius:10px;
+      font-size:0.9rem;
+    }
+
+    .l-question{background:#dc2626;}
+    .l-safe{background:#16a34a;}
+    .l-joker{background:#9333ea;}
+    .l-deadlock{background:#ea580c;}
+    .l-deadline{background:#ca8a04;}
+
+  </style>
+</head>
+
+<body>
+
+  <h1>🃏 RTOS Roulette</h1>
+  <p>Elige una carta... y sobrevive al sistema.</p>
+
+  <div class="board" id="board"></div>
+
+  <div class="controls">
+    <button onclick="resetGame()">Reiniciar Juego</button>
+  </div>
+
+  <div class="legend">
+    <div class="l-question">❓ Pregunta</div>
+    <div class="l-safe">✅ Safe</div>
+    <div class="l-joker">🃏 Joker</div>
+    <div class="l-deadlock">💀 Deadlock</div>
+    <div class="l-deadline">⏱ Deadline</div>
+  </div>
+
+<script>
+
+const cardData = [
+  {
+    type:"question",
+    text:"❓\n¿Qué significa multitarea?"
+  },
+  {
+    type:"safe",
+    text:"✅\nTask Idle\nTe salvaste"
+  },
+  {
+    type:"joker",
+    text:"🃏\nScheduler Chaos\nElige a alguien"
+  },
+  {
+    type:"question",
+    text:"❓\n¿Qué es un deadline?"
+  },
+  {
+    type:"deadlock",
+    text:"💀\nDeadlock\nResponde con otra persona"
+  },
+  {
+    type:"safe",
+    text:"✅\nSistema estable"
+  },
+  {
+    type:"deadline",
+    text:"⏱\n5 segundos para responder"
+  },
+  {
+    type:"question",
+    text:"❓\n¿Qué hace un scheduler?"
+  }
+];
+
+const board = document.getElementById("board");
+
+function createBoard(){
+
+  board.innerHTML = "";
+
+  const shuffled = [...cardData].sort(() => Math.random() - 0.5);
+
+  shuffled.forEach((card,index)=>{
+
+    const cardElement = document.createElement("div");
+    cardElement.classList.add("card");
+
+    cardElement.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">
+          Carta ${index + 1}
+        </div>
+
+        <div class="card-back ${card.type}">
+          ${card.text.replace(/\n/g,"<br>")}
+        </div>
+      </div>
+    `;
+
+    cardElement.addEventListener("click",()=>{
+
+      if(cardElement.classList.contains("flipped")) return;
+
+      cardElement.classList.add("flipped");
+
+    });
+
+    board.appendChild(cardElement);
+
+  });
+
+}
+
+function resetGame(){
+  createBoard();
+}
+
+createBoard();
+
+</script>
+
+</body>
+</html>
