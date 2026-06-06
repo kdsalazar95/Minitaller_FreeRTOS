@@ -1,0 +1,3 @@
+/home/hella/Taller_Embebidos/Minitaller/Minitaller_FreeRTOS/Tutorial_Guiado/build/CMakeFiles/taller.dir
+/home/hella/Taller_Embebidos/Minitaller/Minitaller_FreeRTOS/Tutorial_Guiado/build/CMakeFiles/edit_cache.dir
+/home/hella/Taller_Embebidos/Minitaller/Minitaller_FreeRTOS/Tutorial_Guiado/build/CMakeFiles/rebuild_cache.dir
