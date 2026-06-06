@@ -48,15 +48,15 @@ target_link_libraries( taller pthread )
 target_compile_options( taller PRIVATE ${COMMON_FLAGS} )
 
 # ── Target: solucion ──────────────────────────────────────────────────────────
-add_executable( solucion
-    src/taller_solucion.c
-    ${FREERTOS_SOURCES}
-)
-target_include_directories( solucion PRIVATE ${FREERTOS_INCLUDES} )
-target_link_libraries( solucion pthread )
-target_compile_options( solucion PRIVATE ${COMMON_FLAGS} )
+#add_executable( solucion
+#    src/taller_solucion.c
+#    ${FREERTOS_SOURCES}
+#)
+#target_include_directories( solucion PRIVATE ${FREERTOS_INCLUDES} )
+#target_link_libraries( solucion pthread )
+#target_compile_options( solucion PRIVATE ${COMMON_FLAGS} )
 
 # ── Mensaje de ayuda al configurar ───────────────────────────────────────────
 message( STATUS "Targets disponibles:" )
 message( STATUS "  make taller   → compila tu código (con TODOs)" )
-message( STATUS "  make solucion → compila la solución de referencia" )
+#message( STATUS "  make solucion → compila la solución de referencia" )

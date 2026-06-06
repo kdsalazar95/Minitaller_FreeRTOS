@@ -31,36 +31,40 @@ Al completar el taller tendrás corriendo un programa con **cuatro tasks** simul
 ## Setup (hazlo antes del taller)
 
 ```bash
-# 1. Clona el repo con el submodule de FreeRTOS-Kernel
-git clone --recurse-submodules https://github.com/<tu-usuario>/freertos-taller.git
-cd freertos-taller
+# 1. Clona el repo
+git clone git@github.com:kdsalazar95/Minitaller_FreeRTOS.git
+cd Minitaller_FreeRTOS/Tutorial_Guiado
 
-# Si ya clonaste sin --recurse-submodules:
-git submodule update --init
+# 2. Descarga el kernel de FreeRTOS
+git clone --depth 1 https://github.com/FreeRTOS/FreeRTOS-Kernel.git FreeRTOS-Kernel
 
-# 2. Configura el build
+# 3. Configura el build
 mkdir build && cd build
 cmake ..
 
-# 3. Compila y prueba que funciona
+# 4. Compila y prueba que funciona
 make taller
 ./taller
 ```
 
 > Si ves el mensaje `FreeRTOS Mini-Taller` en la terminal, el ambiente está listo. El programa no imprimirá más porque los TODOs están vacíos — eso es correcto.
 
+
+## Instrucciones para las tareas
+
+En el script `taller.c` está indicado donde debes agregar cada parte del tutorial.
+Una vez que agregues una parte, córrela con la instrucción #4 anterior y para detener la ejecución presiona `Ctrl + C`
 ---
 
 ## Estructura del repo
 
 ```
-freertos-taller/
+Tutorial_Guiado/
 ├── src/
-│   ├── taller.c           ← tu archivo de trabajo (aquí están los TODOs)
-│   └── taller_solucion.c  ← solución de referencia (¡no la abras todavía!)
+│   └── taller.c           ← tu archivo de trabajo (aquí están los TODOs)
 ├── FreeRTOSConfig.h        ← configuración del kernel
 ├── CMakeLists.txt          ← sistema de build
-└── FreeRTOS-Kernel/        ← kernel oficial (submodule, no modificar)
+└── FreeRTOS-Kernel/        ← kernel oficial (no modificar)
 ```
 
 **Abre `src/taller.c` y trabaja de arriba hacia abajo.**
@@ -359,14 +363,6 @@ Luego usa `pcNombre` en lugar de un string literal en tu `printf`.
 
 </details>
 
----
-
-## Verificar tu solución
-
-```bash
-# Compila y corre la solución de referencia
-make solucion && ./solucion
-```
 
 ---
 
