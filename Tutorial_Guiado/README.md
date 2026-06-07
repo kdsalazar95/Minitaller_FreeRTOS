@@ -32,8 +32,12 @@ Al completar el taller tendrás corriendo un programa con **cuatro tasks** simul
 
 ```bash
 # 1. Clona el repo
-git clone git@github.com:kdsalazar95/Minitaller_FreeRTOS.git
+
+    # 1.1  Ir a la carpeta de Tutorial giado
 cd Minitaller_FreeRTOS/Tutorial_Guiado
+
+    # 1.2 Clonar el repo del kernerl
+git clone git@github.com:kdsalazar95/Minitaller_FreeRTOS.git
 
 # 2. Descarga el kernel de FreeRTOS
 git clone --depth 1 https://github.com/FreeRTOS/FreeRTOS-Kernel.git FreeRTOS-Kernel
@@ -64,6 +68,7 @@ Tutorial_Guiado/
 │   └── taller.c           ← tu archivo de trabajo (aquí están los TODOs)
 ├── FreeRTOSConfig.h        ← configuración del kernel
 ├── CMakeLists.txt          ← sistema de build
+├── README.md
 └── FreeRTOS-Kernel/        ← kernel oficial (no modificar)
 ```
 
